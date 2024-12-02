@@ -1,0 +1,42 @@
+<link rel="stylesheet" href="cursos.css">
+<button id="btn">Haz clic en mí</button>
+<p id="mensaje"></p>
+
+<script>
+    const boton = document.getElementById("btn");
+    const mensaje = document.getElementById("mensaje");
+
+    // Evento de clic simple
+    boton.addEventListener("click", () => {
+        mensaje.innerText = "¡Hiciste clic en el botón!";
+    });
+
+    // Evento de pasar el mouse sobre el botón
+    boton.addEventListener("mouseover", () => {
+        mensaje.innerText = "Estás sobre el botón";
+    });
+
+    // Evento de sacar el mouse del botón
+    boton.addEventListener("mouseout", () => {
+        mensaje.innerText = "El cursor ha salido del botón";
+    });
+
+    // Evento de doble clic
+    boton.addEventListener("dblclick", () => {
+        mensaje.innerText = "Has clickado dos veces la caja";
+        
+        // Cambiar el color de fondo a un color aleatorio
+        boton.style.backgroundColor = getRandomColor();
+    });
+
+
+    function getRandomColor() {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+</script>
+
