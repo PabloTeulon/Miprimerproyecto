@@ -1,0 +1,26 @@
+<div id="lista">
+    <button class="item">Elemento 1</button>
+    <button class="item">Elemento 2</button>
+    <button id="agregar">Agregar nuevo botón</button>
+</div>
+
+<script>
+    // Evento de delegación para manejar clics en los botones dentro de #lista
+    document.getElementById("lista").addEventListener("click", (event) => {
+        // Verifica si el clic fue en un botón con la clase 'item'
+        if (event.target.classList.contains("item")) {
+            alert("Has hecho clic en: " + event.target.innerText);
+        }
+    });
+
+    // Maneja el clic en el botón 'Agregar nuevo botón'
+    document.getElementById("agregar").addEventListener("click", () => {
+        // Crear un nuevo botón
+        const nuevoBoton = document.createElement("button");
+        nuevoBoton.classList.add("item");
+        nuevoBoton.innerText = `Elemento ${document.getElementsByClassName("item").length}`;
+        
+        // Agregar el nuevo botón al contenedor
+        document.getElementById("lista").appendChild(nuevoBoton);
+    });
+</script>

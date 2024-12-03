@@ -1,0 +1,28 @@
+<link rel="stylesheet" href="timeout.css">
+<p id="temporizador">Tiempo: 10 segundos</p>
+<p id="mensaje"></p>
+
+<!-- Video oculto inicialmente usando iframe -->
+<iframe id="video" width="560" height="315" style="display:none;" 
+        src="https://www.youtube.com/embed/6dC99i3JyTk?autoplay=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
+</iframe>
+
+<script>
+    let tiempo = 10; // Iniciar el temporizador en 10 segundos
+    const temporizadorElement = document.getElementById("temporizador");
+    const mensajeElement = document.getElementById("mensaje");
+    const videoElement = document.getElementById("video");
+
+    const interval = setInterval(() => {
+        if (tiempo > 0) {
+            tiempo -= 1;
+            temporizadorElement.innerText = `Tiempo: ${tiempo} segundos`;
+        } else {
+            mensajeElement.innerText = "You got dariused!";
+            clearInterval(interval); // Detener el temporizador
+
+            // Mostrar el video
+            videoElement.style.display = "block"; // Mostrar el video
+        }
+    }, 1000); // Cada segundo
+</script>
