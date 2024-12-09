@@ -1,0 +1,27 @@
+<div id="foro">
+    <p>Bienvenidos al Foro</p>
+    <button id="nuevoMensaje">Agregar Mensaje</button>
+    <div id="mensajes"></div>
+</div>
+
+<script>
+    const mensajes = document.getElementById("mensajes");
+
+    document.getElementById("nuevoMensaje").addEventListener("click", () => {
+        const mensaje = document.createElement("div");
+        mensaje.classList.add("mensaje");
+        mensaje.innerText = "Nuevo mensaje añadido";
+        
+        const eliminarBtn = document.createElement("button");
+        eliminarBtn.innerText = "Eliminar";
+        mensaje.appendChild(eliminarBtn);
+
+        mensajes.appendChild(mensaje);
+    });
+
+    mensajes.addEventListener("click", (event) => {
+        if (event.target.tagName === "BUTTON") {
+            event.target.parentNode.remove();
+        }
+    });
+</script>

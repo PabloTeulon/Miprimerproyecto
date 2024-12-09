@@ -1,0 +1,186 @@
+<link rel="stylesheet" href="practico.css">
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Punto de Información de Darius</title> <!-- Título de la página -->
+    <link rel="stylesheet" href="practico.css">
+</head>
+<body>
+    <!-- Encabezado -->
+    <header>
+        <h1>Punto de Información de Darius</h1>
+        <p>Bienvenido a este foro interactivo donde podrás interactuar con mensajes y videos.</p>
+    </header>
+
+    <div id="foro">
+        <p>Bienvenidos al Foro</p>
+        <button id="nuevoMensaje">Agregar Mensaje</button>
+        <button id="cargarMas">Cargar más</button>
+        <div id="mensajes"></div>
+        <div id="notificacion" style="display:none;">
+            <img src="https://cdn-images.dzcdn.net/images/cover/7e02f44e2dd3bcf43ea6c43f2b6b1516/1900x1900-000000-80-0-0.jpg" alt="Notificación" style="width: 100px; height: 100px;">
+        </div>
+        <p id="mensajeVacio" style="display: none;">No hay mensajes</p> <!-- Mensaje cuando no hay mensajes -->
+    </div>
+
+    <audio id="notificacionSonido" src="https://www.soundjay.com/button/beep-07.wav" preload="auto"></audio>
+
+    <!-- Imágenes flotantes -->
+    <div id="imagenIzquierda" style="position: fixed; top: 20%; left: -150px; transition: left 0.5s;">
+        <img src="https://i.scdn.co/image/ab67616d00001e0281bfc58662f57dad9c32f7bd" alt="Imagen Izquierda" style="width: 150px; height: 150px;">
+    </div>
+    <div id="imagenDerecha" style="position: fixed; top: 20%; right: -150px; transition: right 0.5s;">
+        <img src="https://i.scdn.co/image/ab67616d00001e0281bfc58662f57dad9c32f7bd" alt="Imagen Derecha" style="width: 150px; height: 150px;">
+    </div>
+
+    <script>
+        const mensajes = document.getElementById("mensajes");
+        const notificacion = document.getElementById("notificacion");
+        const notificacionSonido = document.getElementById("notificacionSonido");
+        const imagenIzquierda = document.getElementById("imagenIzquierda");
+        const imagenDerecha = document.getElementById("imagenDerecha");
+        const cargarMasBtn = document.getElementById("cargarMas");
+        const nuevoMensajeBtn = document.getElementById("nuevoMensaje");
+        const mensajeVacio = document.getElementById("mensajeVacio");
+
+        // URLs de los videos de YouTube
+        const videos = [
+            "https://www.youtube.com/watch?v=B91p8H9aPxA",
+            "https://www.youtube.com/watch?v=ySLCgbi9lB4",
+            "https://www.youtube.com/shorts/LVpZOBrKm3o",
+            "https://www.youtube.com/watch?v=HVWCAEYVZk8"
+        ];
+
+        let mensajeAgregado = false;
+        let videosCargados = 0; // Contador de videos cargados
+
+        // Función para mostrar la notificación y reproducir el sonido
+        function mostrarNotificacion() {
+            notificacion.style.display = "block";
+            notificacionSonido.play();  // Reproducir el sonido
+            setTimeout(() => {
+                notificacion.style.display = "none";
+            }, 3000); // La notificación desaparece después de 3 segundos
+        }
+
+        // Agregar un nuevo mensaje al foro con un retraso de 5 segundos
+        nuevoMensajeBtn.addEventListener("click", () => {
+            if (mensajeAgregado) return; // Evitar agregar más de un mensaje
+
+            setTimeout(() => {
+                const mensaje = document.createElement("div");
+                mensaje.classList.add("mensaje");
+                mensaje.innerText = "Nuevo mensaje añadido";
+                
+                const eliminarBtn = document.createElement("button");
+                eliminarBtn.innerText = "Eliminar";
+                
+                const importanteBtn = document.createElement("button");
+                importanteBtn.innerText = "Marcar como Importante";
+
+                mensaje.appendChild(eliminarBtn);
+                mensaje.appendChild(importanteBtn);
+                mensajes.appendChild(mensaje);
+
+                // Desactivar el botón "Agregar Mensaje" después de hacer clic una vez
+                mensajeAgregado = true;
+                nuevoMensajeBtn.disabled = true;
+
+                // Mostrar notificación cuando se agrega un mensaje
+                mostrarNotificacion();
+            }, 5000); // Retraso de 5 segundos
+        });
+
+        // Delegación de eventos: gestionar los botones de eliminar, importante e ir al video
+        mensajes.addEventListener("click", (event) => {
+            const mensaje = event.target.closest(".mensaje");
+
+            if (!mensaje) return; // Si no es un mensaje, no hacer nada
+
+            if (event.target.innerText === "Eliminar") {
+                mensaje.remove();
+                // Mostrar las imágenes flotantes cuando se elimina un mensaje
+                imagenIzquierda.style.left = "10px";
+                imagenDerecha.style.right = "10px";
+                // Después de 3 segundos, ocultar las imágenes
+                setTimeout(() => {
+                    imagenIzquierda.style.left = "-150px";
+                    imagenDerecha.style.right = "-150px";
+                }, 3000);
+
+                // Reaparecer el botón "Cargar más" si se eliminan todos los mensajes
+                if (mensajes.children.length === 0) {
+                    cargarMasBtn.style.display = "inline-block";
+                    mensajeVacio.style.display = "block"; // Mostrar el mensaje "No hay mensajes"
+                }
+            }
+
+            if (event.target.innerText === "Marcar como Importante") {
+                mensaje.style.backgroundColor = "yellow"; // Cambiar el color de fondo para marcarlo como importante
+            }
+
+            // Ir al video al hacer clic en el botón "Ir al Video"
+            if (event.target.innerText === "Ir al Video") {
+                const videoUrl = event.target.dataset.videoUrl; // Obtener la URL del video de los datos del botón
+                window.open(videoUrl, '_blank'); // Abrir el video en una nueva ventana
+            }
+        });
+
+        // Botón de "Cargar más" para cargar más mensajes al foro
+        cargarMasBtn.addEventListener("click", () => {
+            if (videosCargados >= videos.length) return; // Si ya se han cargado todos los videos, no hacer nada
+
+            // Ocultar el botón después de cargar los 4 videos
+            cargarMasBtn.style.display = "none";
+
+            // Añadir los 4 mensajes de video
+            for (let i = videosCargados; i < videos.length; i++) {
+                const mensaje = document.createElement("div");
+                mensaje.classList.add("mensaje");
+                mensaje.innerText = `Mensaje de video ${i + 1}`;
+
+                const videoBtn = document.createElement("button");
+                videoBtn.innerText = "Ir al Video";
+                videoBtn.dataset.videoUrl = videos[i]; // Asignar la URL del video al botón
+
+                const eliminarBtn = document.createElement("button");
+                eliminarBtn.innerText = "Eliminar";
+                
+                const importanteBtn = document.createElement("button");
+                importanteBtn.innerText = "Marcar como Importante";
+
+                mensaje.appendChild(eliminarBtn);
+                mensaje.appendChild(importanteBtn);
+                mensaje.appendChild(videoBtn); // Agregar botón de video
+                mensajes.appendChild(mensaje);
+                videosCargados++; // Incrementar el contador de videos cargados
+            }
+
+            // Si todos los mensajes se han cargado, ocultar el botón
+            if (videosCargados >= videos.length) {
+                cargarMasBtn.style.display = "none";
+            }
+        });
+
+        // Función para reiniciar el foro
+        function reiniciarForo() {
+            mensajes.innerHTML = ""; // Eliminar todos los mensajes
+            videosCargados = 0; // Reiniciar contador de videos cargados
+            mensajeAgregado = false; // Reiniciar estado del botón "Agregar Mensaje"
+            nuevoMensajeBtn.disabled = false; // Habilitar nuevamente el botón "Agregar Mensaje"
+            cargarMasBtn.style.display = "inline-block"; // Mostrar el botón "Cargar más"
+            mensajeVacio.style.display = "none"; // Ocultar el mensaje "No hay mensajes"
+        }
+
+        // Para reiniciar el foro cuando sea necesario, puedes llamar a `reiniciarForo()`
+        // reiniciarForo(); // Descomenta esta línea si deseas reiniciar el foro en algún momento
+    </script>
+
+    <!-- Pie de página -->
+    <footer style="text-align: center; margin-top: 20px;">
+        <p>&copy; 2024 Derechos reservados por Pablo Teulón</p>
+    </footer>
+</body>
+</html>
